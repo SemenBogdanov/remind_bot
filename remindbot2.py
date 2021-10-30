@@ -35,9 +35,9 @@ async def echo(message: types.Message):
     await message.answer('This is your chat.id = ' + str(message.chat.id))
 
 
-@dp.message_handler(text=['hello','привет','как дела'])
+@dp.message_handler(text=['hello', 'привет', 'как дела'])
 async def reply_welcome(message: types.Message):
-    await message.reply('Привет! Я Аля - бот-помощник!')
+    await message.reply('Привет! Я Аля - бот-помощник! Скоро будет база данных!')
 
 
 async def remindMe(wait_time=20):
