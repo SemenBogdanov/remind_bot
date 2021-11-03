@@ -6,7 +6,7 @@ import asyncio
 import logging
 import datetime
 from key import token
-
+from BotDB import BotDB
 from aiogram import Bot, Dispatcher, executor, types
 
 API_TOKEN = token
@@ -18,6 +18,11 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
+try:
+    botDatabase = BotDB()
+except Exception as e:
+    print(e)
+
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
@@ -26,6 +31,15 @@ async def send_welcome(message: types.Message):
     """
     await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
     await message.answer('This is your chat.id = ' + str(message.chat.id))
+
+
+@dp.message_handler(commands=['getall'])
+async def get_records(message: types.Message):
+    reply_text = botDatabase.get_all_records()
+    print('Содержимое переменной reply_text:')
+    print(reply_text)
+    print('______________________')
+    await message.answer(reply_text)
 
 
 @dp.message_handler(text=['chatid'])
@@ -47,20 +61,16 @@ async def remindMe(wait_time=20):
         await asyncio.sleep(wait_time)
         try:
             # Получаем списко друзей из БД в виде списка с кортежами внутри
-            friends = ({'name': 'Джигурда',
-                        'birthday': '17.10.1985',
-                        'workplace': 'sberbank'},
-                       {'name': 'Оганез',
-                        'birthday': '29.10.2021',
-                        'workplace': 'Жесть corporation'})
+            friends = botDatabase.get_friends()
             # Убираем год рождения, чтоб понять у кого сегодня день рождения
             format_date = '%d.%m'
             # Получаем текущую дату
             today = datetime.datetime.strftime((datetime.datetime.now().date()), format_date)
-            remind_list = (x['name'] for x in friends if x['birthday'][0:5] == today[0:5])
-            celebrants = ', '.join(remind_list)
-            if celebrants:
-                remind_msg = 'Сегодня праздник у друзей: {}'.format(celebrants)
+            remind_list = (x[0] for x in friends if x[1].strftime(format_date) == today)
+            celebrants = ' \n'.join(remind_list)
+
+            if bool(len(celebrants)):
+                remind_msg = 'Сегодня праздник у друзей: \n{}'.format(celebrants)
                 await bot.send_message(chat_id='287994530', text=remind_msg)
                 # chat_id='-1001716787365'
             else:
@@ -74,10 +84,11 @@ async def remindMe(wait_time=20):
 if __name__ == '__main__':
     try:
         loop = asyncio.get_event_loop()
-        delay = 60 ** 2 * 3
+        delay = 60 ** 2 * 8
         loop.create_task(remindMe(delay))
         executor.start_polling(dp, skip_updates=True)
 
-    except:
-        print('except')
+    except Exception as error:
+        print('except \n'+error)
+        botDatabase.conn.close()
         loop.stop()
