@@ -28,6 +28,16 @@ class BotDB:
         print(res)
         return res
 
+    def add_new_date(self, p_name, p_date):
+        """Добавляем новую запись о дне рождения в таблицу"""
+        try:
+            query = """INSERT INTO people (persone_name, birthday_date) values (%s,%s)"""
+            values = (str(p_name), str(p_date),)
+            self.cur.execute(query, values)
+            return True
+        except:
+            return False
+
     def getinfo(self):
         return self.conn.info
 

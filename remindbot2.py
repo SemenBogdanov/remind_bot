@@ -5,9 +5,15 @@ It echoes any incoming text messages.git
 import asyncio
 import logging
 import datetime
+
+import typing
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, \
+    ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.callback_data import CallbackData
 from key import token
 from BotDB import BotDB
 from aiogram import Bot, Dispatcher, executor, types
+from answers import answers
 
 API_TOKEN = token
 
@@ -42,6 +48,29 @@ async def get_records(message: types.Message):
     await message.answer(reply_text)
 
 
+call_data = CallbackData('data', 'num')
+
+
+def get_keyboard():
+    return InlineKeyboardMarkup().row(
+        InlineKeyboardButton('Первый вопрос', callback_data=call_data.new(num='1')),
+        InlineKeyboardButton('Второй вопрос', callback_data=call_data.new(num='2')),
+        InlineKeyboardButton('Третий вопрос', callback_data=call_data.new(num='3')),
+    )
+
+
+@dp.message_handler(commands=['anb'])
+async def addnewbirth(message: types.Message):
+    await message.reply('Please push the button! ', reply_markup=get_keyboard())
+
+
+@dp.callback_query_handler(call_data.filter(num=['1', '2', '3']))
+async def callback_reply(query: types.CallbackQuery, callback_data):
+    logging.info('This what we have got %r', callback_data)
+    ans = answers[int(callback_data['num'])-1]
+    await bot.send_message(query.message.chat.id, ans)
+
+
 @dp.message_handler(text=['chatid'])
 async def echo(message: types.Message):
     # old style:
@@ -54,7 +83,7 @@ async def reply_welcome(message: types.Message):
     await message.reply('Привет! Я Аля - бот-помощник! Скоро будет база данных!')
 
 
-async def remindMe(wait_time=20):
+async def remind_me(wait_time=20):
     today = str(datetime.datetime.today().date())
 
     while True:
@@ -65,7 +94,7 @@ async def remindMe(wait_time=20):
             # Убираем год рождения, чтоб понять у кого сегодня день рождения
             format_date = '%d.%m'
             # Получаем текущую дату
-            today = datetime.datetime.strftime((datetime.datetime.now().date()), format_date)
+            today = datetime.datetime.strftime(datetime.datetime.now().date(), format_date)
             remind_list = (x[0] for x in friends if x[1].strftime(format_date) == today)
             celebrants = ' \n'.join(remind_list)
 
@@ -85,10 +114,10 @@ if __name__ == '__main__':
     try:
         loop = asyncio.get_event_loop()
         delay = 60 ** 2 * 8
-        loop.create_task(remindMe(delay))
+        loop.create_task(remind_me(delay))
         executor.start_polling(dp, skip_updates=True)
 
     except Exception as error:
-        print('except \n'+error)
+        print('except \n' + error)
         botDatabase.conn.close()
         loop.stop()
