@@ -35,40 +35,56 @@ async def send_welcome(message: types.Message):
     """
     This handler will be called when user sends `/start` or `/help` command
     """
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
-    await message.answer('This is your chat.id = ' + str(message.chat.id))
+    await message.reply("""Добрый день!\n"""
+                        """Выбирайте самый сложный путь - там не конкурентов!\n\n"""
+                        """Ниже есть кнопка, чтоб увидеть ответы на часто задаваемые вопросы. """,
+                        reply_markup=keyboard2())
+    # await message.answer('This is your chat.id = ' + str(message.chat.id))
 
 
 @dp.message_handler(commands=['getall'])
 async def get_records(message: types.Message):
     reply_text = botDatabase.get_all_records()
-    print('Содержимое переменной reply_text:')
-    print(reply_text)
-    print('______________________')
     await message.answer(reply_text)
 
 
-call_data = CallbackData('data', 'num')
+call_data1 = CallbackData('data', 'num')
+call_data2 = CallbackData('wantAsk', 'wantAsk')
 
 
 def get_keyboard():
     return InlineKeyboardMarkup().row(
-        InlineKeyboardButton('Первый вопрос', callback_data=call_data.new(num='1')),
-        InlineKeyboardButton('Второй вопрос', callback_data=call_data.new(num='2')),
-        InlineKeyboardButton('Третий вопрос', callback_data=call_data.new(num='3')),
+        KeyboardButton('Пора ли звонить?', callback_data=call_data1.new(num='1')),
+    ).row(
+        KeyboardButton('Услуги и цены', callback_data=call_data1.new(num='2')),
+        KeyboardButton('Алгоритм работы', callback_data=call_data1.new(num='3')),
+    ).row(
+        KeyboardButton('Команда', callback_data=call_data1.new(num='4')),
+        KeyboardButton('Контакты', callback_data=call_data1.new(num='5')),
+        KeyboardButton('Об авторе...', callback_data=call_data1.new(num='6')),
+    ).row(
+        InlineKeyboardButton(text='Оставить заявку и получить бонус!', url='https://big-career.ru/', callback_data=call_data1.new(num='7')),
     )
 
 
-@dp.message_handler(commands=['anb'])
+def keyboard2():
+    return ReplyKeyboardMarkup(resize_keyboard=True).row(
+        KeyboardButton('---Задать вопрос!---')
+    )
+
+
+@dp.message_handler(text=['---Задать вопрос!---'])
 async def addnewbirth(message: types.Message):
-    await message.reply('Please push the button! ', reply_markup=get_keyboard())
+    await message.reply('Выберите вопрос и нажмите кнопку:\n', reply_markup=get_keyboard())
 
 
-@dp.callback_query_handler(call_data.filter(num=['1', '2', '3']))
+@dp.callback_query_handler(call_data1.filter(num=['1', '2', '3', '4', '5', '6', '7']))
 async def callback_reply(query: types.CallbackQuery, callback_data):
-    logging.info('This what we have got %r', callback_data)
-    ans = answers[int(callback_data['num'])-1]
-    await bot.send_message(query.message.chat.id, ans)
+    await query.answer()
+    # logging.info('This what we have got %r', callback_data)
+    # logging.info('This is calldata1 %r', call_data1)
+    ans = answers[int(callback_data['num']) - 1]
+    await bot.send_message(query.from_user.id, ans, parse_mode='html')
 
 
 @dp.message_handler(text=['chatid'])
