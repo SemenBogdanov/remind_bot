@@ -10,10 +10,12 @@ import typing
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, \
     ReplyKeyboardRemove, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
+
+import keyboards
 from key import token
 from BotDB import BotDB
 from aiogram import Bot, Dispatcher, executor, types
-from answers import answers
+from answers import answers, answers2
 
 API_TOKEN = token
 
@@ -38,7 +40,7 @@ async def send_welcome(message: types.Message):
     await message.reply("""Добрый день!\n"""
                         """Выбирайте самый сложный путь - там не конкурентов!\n\n"""
                         """Ниже есть кнопка, чтоб увидеть ответы на часто задаваемые вопросы. """,
-                        reply_markup=keyboard2())
+                        reply_markup=keyboards.keyboard2())
     # await message.answer('This is your chat.id = ' + str(message.chat.id))
 
 
@@ -48,42 +50,28 @@ async def get_records(message: types.Message):
     await message.answer(reply_text)
 
 
-call_data1 = CallbackData('data', 'num')
-call_data2 = CallbackData('wantAsk', 'wantAsk')
-
-
-def get_keyboard():
-    return InlineKeyboardMarkup().row(
-        KeyboardButton('Пора ли звонить?', callback_data=call_data1.new(num='1')),
-    ).row(
-        KeyboardButton('Услуги и цены', callback_data=call_data1.new(num='2')),
-        KeyboardButton('Алгоритм работы', callback_data=call_data1.new(num='3')),
-    ).row(
-        KeyboardButton('Команда', callback_data=call_data1.new(num='4')),
-        KeyboardButton('Контакты', callback_data=call_data1.new(num='5')),
-        KeyboardButton('Об авторе...', callback_data=call_data1.new(num='6')),
-    ).row(
-        InlineKeyboardButton(text='Оставить заявку и получить бонус!', url='https://big-career.ru/', callback_data=call_data1.new(num='7')),
-    )
-
-
-def keyboard2():
-    return ReplyKeyboardMarkup(resize_keyboard=True).row(
-        KeyboardButton('---Задать вопрос!---')
-    )
-
-
 @dp.message_handler(text=['---Задать вопрос!---'])
 async def addnewbirth(message: types.Message):
-    await message.reply('Выберите вопрос и нажмите кнопку:\n', reply_markup=get_keyboard())
+    await message.reply('Выберите вопрос и нажмите кнопку:\n', reply_markup=keyboards.get_keyboard())
 
 
-@dp.callback_query_handler(call_data1.filter(num=['1', '2', '3', '4', '5', '6', '7']))
+@dp.callback_query_handler(keyboards.call_data1.filter(num1=['1', '2', '3', '4', '5', '6', '7']))
 async def callback_reply(query: types.CallbackQuery, callback_data):
     await query.answer()
+    if callback_data['num1'] == '2':
+        await bot.send_message(query.from_user.id, 'Выберите вариант:',
+                               reply_markup=keyboards.keyboard3())
+    else:
+        ans = answers[int(callback_data['num1']) - 1]
+        await bot.send_message(query.from_user.id, ans, parse_mode='html')
     # logging.info('This what we have got %r', callback_data)
     # logging.info('This is calldata1 %r', call_data1)
-    ans = answers[int(callback_data['num']) - 1]
+
+
+@dp.callback_query_handler(keyboards.call_data3.filter(num2=['0', '1', '2', '3']))
+async def callback_reply(query: types.CallbackQuery, callback_data):
+    await query.answer()
+    ans = answers2[int(callback_data['num2'])]
     await bot.send_message(query.from_user.id, ans, parse_mode='html')
 
 
