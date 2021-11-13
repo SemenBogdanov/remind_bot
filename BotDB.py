@@ -25,15 +25,16 @@ class BotDB:
         query = "select persone_name, birthday_date from people;"
         self.cur.execute(query)
         res = self.cur.fetchall()
-        print(res)
+        # print(res)
         return res
 
-    def add_new_date(self, p_name, p_date):
+    def add_birthday(self, p_name, p_date):
         """Добавляем новую запись о дне рождения в таблицу"""
         try:
             query = """INSERT INTO people (persone_name, birthday_date) values (%s,%s)"""
             values = (str(p_name), str(p_date),)
             self.cur.execute(query, values)
+            self.conn.commit()
             return True
         except:
             return False
