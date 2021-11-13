@@ -41,6 +41,6 @@ class BotDB:
     def getinfo(self):
         return self.conn.info
 
-    def close(self, id):
+    def close(self):
         """Закрытие соединения с БД"""
         self.conn.close()
