@@ -1,3 +1,5 @@
+import logging
+
 import psycopg2
 from key import user, password, host, port
 
@@ -37,6 +39,23 @@ class BotDB:
             self.conn.commit()
             return True
         except:
+            return False
+
+    def del_by_id(self, id):
+        """Удаляем запись о дне рождении по ID"""
+        try:
+            self.cur.execute("delete from people p where p.id = %s", (id,))
+            self.conn.commit()
+            return True
+        except:
+            return False
+
+    def find_by_surname(self, surname):
+        self.cur.execute("select * from people p where p.persone_name like %s", (surname,))
+        res = self.cur.fetchall()
+        if res:
+            return res
+        else:
             return False
 
     def getinfo(self):
