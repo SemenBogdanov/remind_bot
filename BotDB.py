@@ -24,21 +24,30 @@ class BotDB:
 
     def get_friends(self):
         """Получаем список друзей для проверки дней рождений"""
-        query = "select persone_name, birthday_date from people;"
+        query = "select persone_name, birthday_date from people where type_persons = '1';"
         self.cur.execute(query)
         res = self.cur.fetchall()
         # print(res)
         return res
 
-    def add_birthday(self, p_name, p_date):
+    def get_colleagues(self):
+        """Получаем список коллег для проверки дней рождений"""
+        query = "select persone_name, birthday_date from people p where p.type_persons = '2';"
+        self.cur.execute(query)
+        res = self.cur.fetchall()
+        # print(res)
+        return res
+
+    def add_birthday(self, p_name, p_date, p_type):
         """Добавляем новую запись о дне рождения в таблицу"""
         try:
-            query = """INSERT INTO people (persone_name, birthday_date) values (%s,%s)"""
-            values = (str(p_name), str(p_date),)
+            query = """INSERT INTO people (persone_name, birthday_date, type_persons) values (%s,%s,%s)"""
+            values = (str(p_name), str(p_date), str(p_type),)
             self.cur.execute(query, values)
             self.conn.commit()
             return True
-        except:
+        except Exception as e:
+            print("Ошибка при вставке {}", e)
             return False
 
     def del_by_id(self, id):

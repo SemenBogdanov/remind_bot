@@ -21,6 +21,7 @@ if __name__ == '__main__':
         loop = asyncio.get_event_loop()
         delay = 60 ** 2 * 8
         loop.create_task(my_functions.other_functions.remind_me(delay))
+        loop.create_task(my_functions.other_functions.remind_cnp(delay))
         executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
 
     except Exception as error:

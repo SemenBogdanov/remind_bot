@@ -5,15 +5,32 @@ from aiogram import types, Dispatcher
 async def get_my_chat_id(message: types.Message):
     await message.answer('This is your chat.id = ' + str(message.chat.id))
 
+async def help(message: types.Message):
+    await message.answer('Помощь:\n'
+                         '<b>др цнп</b> - вывод списка всех дней рождений, ранее записанных в базу данных\n'
+                         '<b>добавить др</b> - добавляет новую запись о дне рождении в базу данных '
+                         'по соответствующему шаблону'
+                         '\n<b>найти (Фамилия)</b> - регистрозависимый поиск конкретной записи по фамилии сотрудника'
+                         '\n<b>удалить (ID)</b> - удаляет запись с указанным номером'
+                         '\n<b>/mychatid</b> - показать ID текущего чата',
+                         '\n<b>/myuserid</b> - показать ID пользователя', parse_mode=types.ParseMode.HTML)
+
+
+async def get_my_user_id(message: types.Message):
+    await message.answer('This is your chat.id = ' + str(message.from_user))
+
 
 async def reply_welcome(message: types.Message):
-    await message.reply('Привет! Я Аля - бот-помощник! Скоро будет база данных!')
+    await message.reply('Привет! Я могу напоминать тебе про дни рождения')
 
 
 # register handlers
 def register_other_functions(dp: Dispatcher):
     dp.register_message_handler(get_my_chat_id, commands=['mychatid'])
-    dp.register_message_handler(reply_welcome, text=['hello', 'привет', 'как дела'])
+    welcome_keywords = ['Hello', 'hello', 'привет', 'как дела']
+    dp.register_message_handler(reply_welcome, text=welcome_keywords)
+    dp.register_message_handler(get_my_user_id, commands=['myuserid'])
+    dp.register_message_handler(help,commands=['help'])
 
 # There is no use functions and handlers below:
 
