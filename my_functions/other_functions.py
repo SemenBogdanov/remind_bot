@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime as dt
+from datetime import timedelta as td
 from create_bot import botDatabase, bot
 import logging
 
@@ -48,6 +49,34 @@ async def remind_cnp(wait_time=20):
 
             if bool(len(celebrants)):
                 remind_msg = 'Сегодня праздник у коллег: \n{}'.format(celebrants)
+                await bot.send_message(chat_id='-1001781029794', text=remind_msg)
+                # chat_id='-1001716787365'
+            else:
+                # await bot.send_message(chat_id='-1001781029794', text='Именинников сегодня нет')
+                print("Проверка на дни рождения выполнена успешно")
+        except Exception as e:
+            print("не удалось доставить напоминание")
+            print(e)
+
+
+async def remind_week_cnp(wait_time=20):
+    while True:
+        await asyncio.sleep(wait_time)
+        try:
+            # Получаем список друзей из БД в виде списка с кортежами внутри
+            friends = botDatabase.get_colleagues()
+            logging.info(friends)
+            # Убираем год рождения, чтоб понять у кого сегодня день рождения
+            format_date = '%d.%m'
+            # Получаем текущую дату
+            today = dt.strptime(dt.strftime(dt.now()+td(days=10), format_date), '%d.%m')
+            remind_list = (x[0] for x in friends if today >
+                           dt.strptime(x[1].strftime(format_date), "%d.%m") < dt.now())
+            celebrants = ' \n'.join(remind_list)
+            print(f'список: %s', celebrants)
+
+            if bool(len(celebrants)):
+                remind_msg = 'Именинники на следующей неделе!: \n{}'.format(celebrants)
                 await bot.send_message(chat_id='-1001781029794', text=remind_msg)
                 # chat_id='-1001716787365'
             else:
