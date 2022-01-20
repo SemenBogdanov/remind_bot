@@ -22,7 +22,7 @@ if __name__ == '__main__':
         delay = 60 ** 2 * 12
         loop.create_task(my_functions.other_functions.remind_me(delay))
         loop.create_task(my_functions.other_functions.remind_cnp(delay))
-        loop.create_task(my_functions.other_functions.remind_week_cnp())
+        loop.create_task(my_functions.other_functions.remind_week_cnp(delay))
         executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
 
     except Exception as error:
