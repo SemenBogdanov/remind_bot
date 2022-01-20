@@ -26,7 +26,7 @@ async def remind_me(wait_time=20):
                 # chat_id='-1001716787365'
             else:
                 await bot.send_message(chat_id='287994530', text='Именинников сегодня нет')
-            print("---Проверка на дни рождения выполнена успешно")
+            # print("---Проверка на дни рождения выполнена успешно")
         except Exception as e:
             print("не удалось доставить напоминание")
             print(e)
@@ -65,19 +65,27 @@ async def remind_week_cnp(wait_time=20):
         try:
             # Получаем список друзей из БД в виде списка с кортежами внутри
             friends = botDatabase.get_colleagues()
-            logging.info(friends)
+            # logging.info(friends)
             # Убираем год рождения, чтоб понять у кого сегодня день рождения
             format_date = '%d.%m'
             # Получаем текущую дату
-            today = dt.strptime(dt.strftime(dt.now()+td(days=10), format_date), '%d.%m')
-            remind_list = (x[0] for x in friends if today >
-                           dt.strptime(x[1].strftime(format_date), "%d.%m") < dt.now())
-            celebrants = ' \n'.join(remind_list)
-            print(f'список: %s', celebrants)
+            today = dt.strptime(dt.strftime(dt.now() + td(days=10), format_date), '%d.%m')
 
+            remind_list = (x[0] for x in friends if today >
+                           dt.strptime(x[1].strftime(format_date), "%d.%m") >
+                           dt.strptime(dt.now().strftime(format_date), "%d.%m"))
+            celebrants = ' \n'.join(remind_list)
+
+            # print(f'дата now: \n', dt.now())
+            # print(f'дата today: \n', today)
+            # print(f'список: \n', celebrants)
+
+            chats = ['-1001781029794']
             if bool(len(celebrants)):
                 remind_msg = 'Именинники на следующей неделе!: \n{}'.format(celebrants)
-                await bot.send_message(chat_id='-1001781029794', text=remind_msg)
+                for x in chats:
+                    logging.info(x)
+                    await bot.send_message(chat_id=x, text=remind_msg)
                 # chat_id='-1001716787365'
             else:
                 # await bot.send_message(chat_id='-1001781029794', text='Именинников сегодня нет')
