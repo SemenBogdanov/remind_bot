@@ -88,12 +88,11 @@ async def find_by_surname(message: types.Message):
     regex = r"найти \w+\b"
     check = re.match(regex, text)
     isAcceptedUsersForRead = [x for x in AcceptedUsersForRead if x == str(message.from_user.id)]
-
+    isAdmins = [x for x in Admins if x == str(message.from_user.id)]
     reply_text = ""
-    if check and any(isAcceptedUsersForRead):
-        logging.info("Проверка регулярного выражения прошла успешно!")
+    if check and any(isAcceptedUsersForRead) and str(message.chat.id) == '-1001781029794':
         surname = "%" + re.sub(r"найти ", "", text) + "%"
-        res = botDatabase.find_by_surname(surname)
+        res = botDatabase.find_by_surname(surname, 2)
         logging.info(surname)
         if res:
             for r in res:
@@ -102,8 +101,13 @@ async def find_by_surname(message: types.Message):
         else:
             print(res)
             await message.reply('Ошибка при выполнении запроса!\n')
-    else:
-        await message.reply("Запрос не соответствует шаблону!")
+
+    if check and any(isAdmins) and str(message.chat.id) != '-1001781029794':
+        surname = "%" + re.sub(r"найти ", "", text) + "%"
+        res = botDatabase.find_by_surname(surname, 1)
+        for r in res:
+            reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
+        await message.reply(reply_text)
 
 
 # register handlers

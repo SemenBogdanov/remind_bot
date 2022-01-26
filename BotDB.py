@@ -59,13 +59,22 @@ class BotDB:
         except:
             return False
 
-    def find_by_surname(self, surname):
-        self.cur.execute("select * from people p where p.persone_name like %s", (surname,))
-        res = self.cur.fetchall()
-        if res:
-            return res
-        else:
-            return False
+    def find_by_surname(self, surname, tp):
+        if tp == 2:
+            self.cur.execute("select * from people p where p.persone_name like %s "
+                             "and p.type_persons = %s::varchar ", (surname, tp,))
+            res = self.cur.fetchall()
+            if res:
+                return res
+            else:
+                return False
+        elif tp == 1:  # private
+            self.cur.execute("select * from people p where p.persone_name like %s ", (surname,))
+            res = self.cur.fetchall()
+            if res:
+                return res
+            else:
+                return False
 
     def getinfo(self):
         return self.conn.info
