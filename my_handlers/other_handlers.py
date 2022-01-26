@@ -1,9 +1,16 @@
+import asyncio
+import logging
+from datetime import datetime as dt
+from datetime import timedelta as td
 from aiogram import types, Dispatcher
 
-
 # handlers
+from create_bot import botDatabase, bot
+
+
 async def get_my_chat_id(message: types.Message):
     await message.answer('This is your chat.id = ' + str(message.chat.id))
+
 
 async def help(message: types.Message):
     await message.answer('Помощь:\n'
@@ -24,13 +31,38 @@ async def reply_welcome(message: types.Message):
     await message.reply('Привет! Я могу напоминать тебе про дни рождения')
 
 
+async def remind_next_week(message: types.Message):
+    try:
+        friends = botDatabase.get_colleagues()
+        format_date = '%d.%m'
+        today = dt.strptime(dt.strftime(dt.now() + td(days=10), format_date), '%d.%m')
+
+        remind_list = (x[0] + " " + x[1].strftime(format_date)
+                       for x in friends if today >
+                       dt.strptime(x[1].strftime(format_date), "%d.%m") >
+                       dt.strptime(dt.now().strftime(format_date), "%d.%m"))
+        celebrants = ' \n'.join(remind_list)
+        logging.info(celebrants)
+        chats = ['-1001781029794']
+        if bool(len(celebrants)):
+            remind_msg = 'Именинники на следующей неделе!: \n{}'.format(celebrants)
+            for x in chats:
+                await bot.send_message(chat_id=x, text=remind_msg)
+        else:
+            print("Проверка на дни рождения выполнена успешно")
+    except Exception as e:
+        print("не удалось доставить напоминание")
+        print(e)
+
+
 # register handlers
 def register_other_functions(dp: Dispatcher):
     dp.register_message_handler(get_my_chat_id, commands=['mychatid'])
     welcome_keywords = ['Hello', 'hello', 'привет', 'как дела']
     dp.register_message_handler(reply_welcome, text=welcome_keywords)
     dp.register_message_handler(get_my_user_id, commands=['myuserid'])
-    dp.register_message_handler(help,commands=['help'])
+    dp.register_message_handler(help, commands=['help'])
+    dp.register_message_handler(remind_next_week, text_contains=['др след'])
 
 # There is no use functions and handlers below:
 

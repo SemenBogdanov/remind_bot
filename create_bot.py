@@ -6,10 +6,11 @@ from BotDB import BotDB
 
 API_TOKEN = token
 
-# Configure logging
+# Подключаем соответствующую конфигурацию логгирования документа
 logging.basicConfig(level=logging.INFO)
 
-# Initialize bot and dispatcher
+# Создаем экземпляры классов Bot и Dispatcher, которые мы заранее ипортировали
+# из библиотеки aiogram на строке 2
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
