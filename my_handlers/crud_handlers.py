@@ -1,11 +1,13 @@
 import logging
 import re
 from aiogram import types, Dispatcher
+from aiogram.dispatcher.filters import Text
+
 from create_bot import botDatabase
 
 Admins = ['287994530']
-AcceptedUsersForRead = ['287994530', '828612953']
-AcceptedUsersForAdd = ['287994530', '828612953']
+AcceptedUsersForRead = ['287994530','1066758669']
+AcceptedUsersForAdd = ['287994530','1066758669']
 
 
 # handlers
@@ -112,8 +114,8 @@ async def find_by_surname(message: types.Message):
 
 # register handlers
 def register_crud_handlers(dp: Dispatcher):
-    dp.register_message_handler(get_all_records, text_contains=['все др'])
-    dp.register_message_handler(add_birthday, text_contains=['добавить др'])
-    dp.register_message_handler(del_by_id, text_contains=['удалить '])
-    dp.register_message_handler(find_by_surname, text_contains=['найти '])
-    dp.register_message_handler(get_all_colleagues, text_contains=['др цнп'])
+    dp.register_message_handler(get_all_records, Text(equals='все др', ignore_case=True))
+    dp.register_message_handler(add_birthday, Text(equals='добавить др', ignore_case=True))
+    dp.register_message_handler(del_by_id, Text(equals='удалить ', ignore_case=True))
+    dp.register_message_handler(find_by_surname, Text(equals='найти ', ignore_case=True))
+    dp.register_message_handler(get_all_colleagues, Text(equals='др цнп', ignore_case=True))
