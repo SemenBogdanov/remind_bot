@@ -20,7 +20,9 @@ async def get_all_records(message: types.Message):
         reply_text = ''
         for r in res:
             reply_text += "ID: {}, Name: {}, Birthday: {}, Type:{}\n".format(r[0], r[1], r[2], r[3])
-
+            if len(reply_text)>3900:
+                await message.answer(reply_text)
+                reply_text = ''
         await message.answer(reply_text)
     else:
         await message.answer('Нет доступа!')
@@ -44,7 +46,7 @@ async def get_all_colleagues(message: types.Message):
 async def add_birthday(message: types.Message):
     text = message.text
     # logging.info(text)
-    regex = r"^добавить др \w{2,} \w{2,} \d{2}.(\d{2}).\d{4} \d{1}"
+    regex = r"^.обавить др \w{2,} \w{2,} \d{2}.(\d{2}).\d{4} \d{1}"
     check = re.match(regex, text)
     isAcceptedUsersForAdd = [x for x in AcceptedUsersForAdd if x == str(message.from_user.id)]
     if check and any(isAcceptedUsersForAdd):
@@ -68,7 +70,7 @@ async def del_by_id(message: types.Message):
     # logging.info(text)
     isAdmins = [x for x in Admins if x == str(message.from_user.id)]
     if any(isAdmins):
-        regex = r"^удалить \d+$"
+        regex = r"^.далить \d+$"
         check = re.match(regex, text)
         if check:
             logging.info("Проверка регулярного выражения прошла успешно!")
@@ -87,14 +89,23 @@ async def del_by_id(message: types.Message):
 async def find_by_surname(message: types.Message):
     text = message.text
     # logging.info(text)
-    regex = r"найти \w+\b"
+    regex = r".айти \w+\b"
     check = re.match(regex, text)
+    # logging.info(check)
     isAcceptedUsersForRead = [x for x in AcceptedUsersForRead if x == str(message.from_user.id)]
     isAdmins = [x for x in Admins if x == str(message.from_user.id)]
     reply_text = ""
     if check and any(isAcceptedUsersForRead) and str(message.chat.id) == '-1001781029794':
-        surname = "%" + re.sub(r"найти ", "", text) + "%"
-        res = botDatabase.find_by_surname(surname, 2)
+        surname = "%" + re.sub(r".айти ", "", text) + "%"
+        logging.info(surname)
+
+        try:
+            res = botDatabase.find_by_surname(surname, 2)
+        except:
+            print(res)
+            await message.reply('Ошибка при поиске в базе данных!\n')
+
+
         logging.info(surname)
         if res:
             for r in res:
@@ -105,17 +116,24 @@ async def find_by_surname(message: types.Message):
             await message.reply('Ошибка при выполнении запроса!\n')
 
     if check and any(isAdmins) and str(message.chat.id) != '-1001781029794':
-        surname = "%" + re.sub(r"найти ", "", text) + "%"
-        res = botDatabase.find_by_surname(surname, 1)
+        surname = "%" + re.sub(r".айти ", "", text) + "%"
+        try:
+            res = botDatabase.find_by_surname(surname, 1)
+        except:
+            print(res)
+            await message.reply('Ошибка при поиске в базе данных!\n')
+
         for r in res:
             reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
         await message.reply(reply_text)
+    else:
+        await message.reply('Ошибка при выполнении запроса!\n')
 
 
 # register handlers
 def register_crud_handlers(dp: Dispatcher):
     dp.register_message_handler(get_all_records, Text(equals='все др', ignore_case=True))
-    dp.register_message_handler(add_birthday, Text(equals='добавить др', ignore_case=True))
-    dp.register_message_handler(del_by_id, Text(equals='удалить ', ignore_case=True))
-    dp.register_message_handler(find_by_surname, Text(equals='найти ', ignore_case=True))
+    dp.register_message_handler(add_birthday, Text(contains='добавить др', ignore_case=True))
+    dp.register_message_handler(del_by_id, Text(contains='удалить', ignore_case=True))
+    dp.register_message_handler(find_by_surname, Text(contains='найти', ignore_case=True))
     dp.register_message_handler(get_all_colleagues, Text(equals='др цнп', ignore_case=True))
