@@ -87,11 +87,12 @@ async def del_by_id(message: types.Message):
 
 # find by surname
 async def find_by_surname(message: types.Message):
+    res = ''
     text = message.text
-    # logging.info(text)
+    logging.info(text)
     regex = r".айти \w+\b"
     check = re.match(regex, text)
-    # logging.info(check)
+    logging.info(check)
     isAcceptedUsersForRead = [x for x in AcceptedUsersForRead if x == str(message.from_user.id)]
     isAdmins = [x for x in Admins if x == str(message.from_user.id)]
     reply_text = ""
@@ -107,6 +108,7 @@ async def find_by_surname(message: types.Message):
 
 
         logging.info(surname)
+        logging.info(res)
         if res:
             for r in res:
                 reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
@@ -115,19 +117,19 @@ async def find_by_surname(message: types.Message):
             print(res)
             await message.reply('Ошибка при выполнении запроса!\n')
 
-    if check and any(isAdmins) and str(message.chat.id) != '-1001781029794':
-        surname = "%" + re.sub(r".айти ", "", text) + "%"
-        try:
-            res = botDatabase.find_by_surname(surname, 1)
-        except:
-            print(res)
-            await message.reply('Ошибка при поиске в базе данных!\n')
-
-        for r in res:
-            reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
-        await message.reply(reply_text)
-    else:
-        await message.reply('Ошибка при выполнении запроса!\n')
+    # if check and any(isAdmins) and str(message.chat.id) != '-1001781029794':
+    #     surname = "%" + re.sub(r".айти ", "", text) + "%"
+    #     try:
+    #         res = botDatabase.find_by_surname(surname, 1)
+    #     except:
+    #         print(res)
+    #         await message.reply('Ошибка при поиске в базе данных!\n')
+    #
+    #     for r in res:
+    #         reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
+    #     await message.reply(reply_text)
+    # else:
+    #     await message.reply('Ошибка при выполнении запроса!\n')
 
 
 # register handlers
