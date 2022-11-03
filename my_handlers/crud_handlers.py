@@ -50,12 +50,12 @@ async def add_birthday(message: types.Message):
     check = re.match(regex, text)
     isAcceptedUsersForAdd = [x for x in AcceptedUsersForAdd if x == str(message.from_user.id)]
     if check and any(isAcceptedUsersForAdd):
-        logging.info("Проверка регулярного выражения прошла успешно!")
+        # logging.info("Проверка регулярного выражения прошла успешно!")
         text = text.split(' ')
         name = text[2] + ' ' + text[3]
         date = text[4][6:10] + '-' + text[4][3:5] + '-' + text[4][0:2]
         type_pers = text[len(text) - 1:len(text) - 2:-1][0]
-        logging.info("Name: {}, Date: {}, Type: {}".format(name, date, type_pers))
+        # logging.info("Name: {}, Date: {}, Type: {}".format(name, date, type_pers))
         reply_text = botDatabase.add_birthday(p_name=name, p_date=date, p_type=type_pers)
         if reply_text:
             await message.reply('Запись успешно добавлена в базу')
@@ -73,7 +73,7 @@ async def del_by_id(message: types.Message):
         regex = r"^.далить \d+$"
         check = re.match(regex, text)
         if check:
-            logging.info("Проверка регулярного выражения прошла успешно!")
+            # logging.info("Проверка регулярного выражения прошла успешно!")
             reply_text = botDatabase.del_by_id(int(re.sub(r"удалить ", "", text)))
             if reply_text:
                 await message.reply('Запись успешно удалена!')
@@ -89,32 +89,32 @@ async def del_by_id(message: types.Message):
 async def find_by_surname(message: types.Message):
     res = ''
     text = message.text
-    logging.info(text)
+    # logging.info(text)
     regex = r".айти \w+\b"
     check = re.match(regex, text)
-    logging.info(check)
+    # logging.info(check)
     isAcceptedUsersForRead = [x for x in AcceptedUsersForRead if x == str(message.from_user.id)]
     isAdmins = [x for x in Admins if x == str(message.from_user.id)]
     reply_text = ""
     if check and any(isAcceptedUsersForRead) and str(message.chat.id) == '-1001781029794':
         surname = "%" + re.sub(r".айти ", "", text) + "%"
-        logging.info(surname)
+        # logging.info(surname)
 
         try:
             res = botDatabase.find_by_surname(surname, 2)
         except:
-            print(res)
+            # print(res)
             await message.reply('Ошибка при поиске в базе данных!\n')
 
 
-        logging.info(surname)
-        logging.info(res)
+        # logging.info(surname)
+        # logging.info(res)
         if res:
             for r in res:
                 reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
             await message.reply(reply_text)
         else:
-            print(res)
+            # print(res)
             await message.reply('Ошибка при выполнении запроса!\n')
 
     # if check and any(isAdmins) and str(message.chat.id) != '-1001781029794':
