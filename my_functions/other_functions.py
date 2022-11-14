@@ -32,7 +32,6 @@ async def remind_me(wait_time=20):
             # print("не удалось доставить напоминание")
             # print(e)
 
-
 async def remind_cnp(wait_time=20):
     # today = str(datetime.datetime.today().date())
 
