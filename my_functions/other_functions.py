@@ -28,8 +28,9 @@ async def remind_me(wait_time=20):
                 await bot.send_message(chat_id='287994530', text='Именинников сегодня нет')
             # print("---Проверка на дни рождения выполнена успешно")
         except Exception as e:
-            print("не удалось доставить напоминание")
-            print(e)
+            pass
+            # print("не удалось доставить напоминание")
+            # print(e)
 
 
 async def remind_cnp(wait_time=20):
@@ -69,7 +70,7 @@ async def remind_week_cnp(wait_time=20):
             # Убираем год рождения, чтоб понять у кого сегодня день рождения
             format_date = '%d.%m'
             # Получаем текущую дату
-            today = dt.strptime(dt.strftime(dt.now() + td(days=10), format_date), '%d.%m')
+            today = dt.strptime(dt.strftime(dt.now() + td(days=14), format_date), '%d.%m')
 
             remind_list = (x[0] for x in friends if today >
                            dt.strptime(x[1].strftime(format_date), "%d.%m") >
@@ -88,8 +89,9 @@ async def remind_week_cnp(wait_time=20):
                     await bot.send_message(chat_id=x, text=remind_msg)
                 # chat_id='-1001716787365'
             else:
+                pass
                 # await bot.send_message(chat_id='-1001781029794', text='Именинников сегодня нет')
-                print("Проверка на дни рождения выполнена успешно")
+                # print("Проверка на дни рождения выполнена успешно")
         except Exception as e:
-            print("не удалось доставить напоминание")
+            # print("не удалось доставить напоминание")
             print(e)

@@ -6,8 +6,8 @@ from aiogram.dispatcher.filters import Text
 from create_bot import botDatabase
 
 Admins = ['287994530']
-AcceptedUsersForRead = ['287994530','1066758669']
-AcceptedUsersForAdd = ['287994530','1066758669']
+AcceptedUsersForRead = ['287994530', '1066758669']
+AcceptedUsersForAdd = ['287994530', '1066758669']
 
 
 # handlers
@@ -38,6 +38,7 @@ async def get_all_colleagues(message: types.Message):
             reply_text += "Name: {}, Birthday: {}\n".format(r[0], r[1])
 
         await message.answer(reply_text)
+        await message.answer(f'Всего сотрудников: {len(res)}')
     else:
         await message.answer('Нет доступа!')
 
@@ -117,19 +118,21 @@ async def find_by_surname(message: types.Message):
             # print(res)
             await message.reply('Ошибка при выполнении запроса!\n')
 
-    # if check and any(isAdmins) and str(message.chat.id) != '-1001781029794':
-    #     surname = "%" + re.sub(r".айти ", "", text) + "%"
-    #     try:
-    #         res = botDatabase.find_by_surname(surname, 1)
-    #     except:
-    #         print(res)
-    #         await message.reply('Ошибка при поиске в базе данных!\n')
-    #
-    #     for r in res:
-    #         reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
-    #     await message.reply(reply_text)
-    # else:
-    #     await message.reply('Ошибка при выполнении запроса!\n')
+    if check and str(message.chat.id) != '-1001781029794':
+        if any(isAdmins):
+            surname = "%" + re.sub(r".айти ", "", text) + "%"
+            try:
+                res = botDatabase.find_by_surname(surname, 1)
+            except Exception as e:
+                # print(res)
+                await message.reply(f'Ошибка при поиске в базе данных: {e}')
+                await message.reply(f'Переменная res: {res}\n')
+
+            for r in res:
+                reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])
+            await message.reply(reply_text)
+        else:
+            await message.reply('Данный запрос необходимо выполнять только в общем чате.\n')
 
 
 # register handlers

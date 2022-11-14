@@ -18,8 +18,11 @@ my_handlers.other_handlers.register_other_functions(dp)
 
 if __name__ == '__main__':
     try:
-        loop = asyncio.get_event_loop()
+        # loop = asyncio.get_event_loop() # Deprecated
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         delay = 60 ** 2 * 12
+        # asyncio.run()
         loop.create_task(my_functions.other_functions.remind_me(delay))
         loop.create_task(my_functions.other_functions.remind_cnp(delay))
         loop.create_task(my_functions.other_functions.remind_week_cnp(delay))
