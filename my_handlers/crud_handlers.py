@@ -6,8 +6,8 @@ from aiogram.dispatcher.filters import Text
 from create_bot import botDatabase
 
 Admins = ['287994530']
-AcceptedUsersForRead = ['287994530', '1066758669']
-AcceptedUsersForAdd = ['287994530', '1066758669']
+AcceptedUsersForRead = ['287994530', '1066758669','386649114']
+AcceptedUsersForAdd = ['287994530', '1066758669','386649114']
 
 
 # handlers
