@@ -8,6 +8,22 @@ from aiogram import types, Dispatcher
 from create_bot import botDatabase, bot
 
 
+async def flow_do_checklist(message: types.Message):
+    await message.answer('''
+1. Завести задачу в PM-Bitrix24 <a href="https://pm.ac.gov.ru/company/personal/user/">LINK</a>
+2. Добавить новый поток в таблицу потоков дата-офиса  <a href="https://sn.ac.gov.ru:5001/d/s/np57v5uvm1UbCvKC16JOBa
+    nJKiTdpkHg/FFj5J87mBJd6eYxIx6rLpFJZ2fZ_OxbH-9LogldE6XAk">LINK</a>
+3. PG_DEV: Создать таблицу и добавить описание полей, плюс комментарий
+4. Python_DEV: Написать скрипт для последующего добавления в Ni-Fi
+5. Python_DEV: Сделать деплой в ветку DEV в GitLab <a href="http://10.101.16.41/root/py_scr">LINK</a>
+6. Ni-Fi_DEV: Сделать Pipiline, указать скрипт, указать таблицу в PG_DEV
+7. Описать поток на доске MIRO проекта в группе датаофиса <a href="https://miro.com/app/dashboard/">LINK</a>
+8. Протестировать поток
+9. Сделать скриншоты из п.3, п.5, п.6 и прикрепить в задачу
+10. Написать в соответстующие группы в ТГ: перенос из DEV в PROD. Обязательно прикрепить MIRO-link + PM_task_link
+
+ps.: не забыть выключить процессоры в Ni-Fi_DEV''', parse_mode=types.ParseMode.HTML)
+
 async def get_my_chat_id(message: types.Message):
     await message.answer('This is your chat.id = ' + str(message.chat.id))
 
@@ -21,7 +37,9 @@ async def help(message: types.Message):
                          '\n<b>удалить (ID)</b> - удаляет запись с указанным номером'
                          '\n<b>др след</b> - вывод списка дней рождений, на следующей неделе'
                          '\n<b>/mychatid</b> - показать ID текущего чата'
-                         '\n<b>/myuserid</b> - показать ID пользователя', parse_mode=types.ParseMode.HTML)
+                         '\n<b>/myuserid</b> - показать ID пользователя'
+                         '\n<b>/flow_do_checklist</b> - чек-лист создания потока данных по стандартам дата-офиса'
+                         '\n', parse_mode=types.ParseMode.HTML)
 
 
 async def get_my_user_id(message: types.Message):
@@ -64,6 +82,7 @@ def register_other_functions(dp: Dispatcher):
     dp.register_message_handler(get_my_user_id, commands=['myuserid'])
     dp.register_message_handler(help, commands=['help'])
     dp.register_message_handler(remind_next_week, text_contains=['др след'])
+    dp.register_message_handler(flow_do_checklist, commands=['flow_do_checklist'])
 
 # There is no use functions and handlers below:
 
