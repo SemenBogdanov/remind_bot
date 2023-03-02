@@ -21,7 +21,7 @@ if __name__ == '__main__':
         # loop = asyncio.get_event_loop() # Deprecated
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        delay = 60 ** 2 * 12
+        delay = (60 ** 2) * 24
         # asyncio.run()
         loop.create_task(my_functions.other_functions.remind_me(delay))
         loop.create_task(my_functions.other_functions.remind_cnp(delay))

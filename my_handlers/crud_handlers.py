@@ -3,11 +3,17 @@ import re
 from aiogram import types, Dispatcher
 from aiogram.dispatcher.filters import Text
 
+import my_functions.other_functions
 from create_bot import botDatabase
 
 Admins = ['287994530']
-AcceptedUsersForRead = ['287994530', '1066758669','386649114']
-AcceptedUsersForAdd = ['287994530', '1066758669','386649114']
+'''
+Кайшева Вероника - 386649114,
+Семён Богданов - 287994530,
+Екатерина Белякова - 163348459
+'''
+AcceptedUsersForRead = ['287994530', '163348459', '386649114']
+AcceptedUsersForAdd = ['287994530', '163348459', '386649114']
 
 
 # handlers

@@ -2,6 +2,8 @@ import asyncio
 import logging
 from datetime import datetime as dt
 from datetime import timedelta as td
+from my_functions.other_functions import remind_week_cnp
+import emoji
 from aiogram import types, Dispatcher
 
 # handlers
@@ -23,6 +25,7 @@ async def flow_do_checklist(message: types.Message):
 10. Написать в соответстующие группы в ТГ: перенос из DEV в PROD. Обязательно прикрепить MIRO-link + PM_task_link
 
 ps.: не забыть выключить процессоры в Ni-Fi_DEV''', parse_mode=types.ParseMode.HTML)
+
 
 async def get_my_chat_id(message: types.Message):
     await message.answer('This is your chat.id = ' + str(message.chat.id))
@@ -55,16 +58,17 @@ async def remind_next_week(message: types.Message):
         friends = botDatabase.get_colleagues()
         format_date = '%d.%m'
         today = dt.strptime(dt.strftime(dt.now() + td(days=10), format_date), '%d.%m')
+        heart = emoji.emojize(":red_heart:", variant="emoji_type")
 
         remind_list = (x[0] + " " + x[1].strftime(format_date)
                        for x in friends if today >
                        dt.strptime(x[1].strftime(format_date), "%d.%m") >
                        dt.strptime(dt.now().strftime(format_date), "%d.%m"))
         celebrants = ' \n'.join(remind_list)
-        logging.info(celebrants)
+
         chats = ['-1001781029794']
         if bool(len(celebrants)):
-            remind_msg = 'Именинники на следующей неделе!: \n{}'.format(celebrants)
+            remind_msg = '{}ДЕНЬ РОЖДЕНИЯ ВПЕРЕДИ{}: \n{}'.format(heart, heart, celebrants)
             for x in chats:
                 await bot.send_message(chat_id=x, text=remind_msg)
         else:

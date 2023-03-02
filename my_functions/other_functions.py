@@ -1,6 +1,9 @@
 import asyncio
 from datetime import datetime as dt
 from datetime import timedelta as td
+
+import emoji
+
 from create_bot import botDatabase, bot
 import logging
 
@@ -80,10 +83,10 @@ async def remind_week_cnp(wait_time=20):
             # print(f'дата now: \n', dt.now())
             # print(f'дата today: \n', today)
             # print(f'список: \n', celebrants)
-
+            heart = emoji.emojize(":red_heart:", variant="emoji_type")
             chats = ['-1001781029794']
             if bool(len(celebrants)):
-                remind_msg = 'Именинники на следующей неделе!: \n{}'.format(celebrants)
+                remind_msg = '{}ДЕНЬ РОЖДЕНИЯ ВПЕРЕДИ{}: \n{}'.format(heart, heart, celebrants)
                 for x in chats:
                     logging.info(x)
                     await bot.send_message(chat_id=x, text=remind_msg)
