@@ -113,9 +113,6 @@ async def find_by_surname(message: types.Message):
             # print(res)
             await message.reply('Ошибка при поиске в базе данных!\n')
 
-
-        # logging.info(surname)
-        # logging.info(res)
         if res:
             for r in res:
                 reply_text += "ID: {}, Name: {}, Birthday: {}\n".format(r[0], r[1], r[2])

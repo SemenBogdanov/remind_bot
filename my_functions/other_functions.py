@@ -74,8 +74,8 @@ async def remind_week_cnp(wait_time=20):
             format_date = '%d.%m'
             # Получаем текущую дату
             today = dt.strptime(dt.strftime(dt.now() + td(days=14), format_date), '%d.%m')
-
-            remind_list = (x[0] for x in friends if today >
+            # print(friends)
+            remind_list = (x[0] + ', ' + x[1].strftime("%d.%m.%Y") for x in friends if today >
                            dt.strptime(x[1].strftime(format_date), "%d.%m") >
                            dt.strptime(dt.now().strftime(format_date), "%d.%m"))
             celebrants = ' \n'.join(remind_list)
@@ -86,7 +86,7 @@ async def remind_week_cnp(wait_time=20):
             heart = emoji.emojize(":red_heart:", variant="emoji_type")
             chats = ['-1001781029794']
             if bool(len(celebrants)):
-                remind_msg = '{}ДЕНЬ РОЖДЕНИЯ ВПЕРЕДИ{}: \n{}'.format(heart, heart, celebrants)
+                remind_msg = '{} СКОРО ДР !!!{}: \n{}'.format(heart, heart, celebrants)
                 for x in chats:
                     logging.info(x)
                     await bot.send_message(chat_id=x, text=remind_msg)
@@ -98,3 +98,4 @@ async def remind_week_cnp(wait_time=20):
         except Exception as e:
             # print("не удалось доставить напоминание")
             print(e)
+

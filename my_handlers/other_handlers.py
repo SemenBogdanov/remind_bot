@@ -68,7 +68,7 @@ async def remind_next_week(message: types.Message):
 
         chats = ['-1001781029794']
         if bool(len(celebrants)):
-            remind_msg = '{}ДЕНЬ РОЖДЕНИЯ ВПЕРЕДИ{}: \n{}'.format(heart, heart, celebrants)
+            remind_msg = '{}ДЕНЬ РОЖДЕНИЯ ДАЛЕЕ{}: \n{}'.format(heart, heart, celebrants)
             for x in chats:
                 await bot.send_message(chat_id=x, text=remind_msg)
         else:
@@ -87,6 +87,7 @@ def register_other_functions(dp: Dispatcher):
     dp.register_message_handler(help, commands=['help'])
     dp.register_message_handler(remind_next_week, text_contains=['др след'])
     dp.register_message_handler(flow_do_checklist, commands=['flow_do_checklist'])
+    # dp.register_message_handler(get_file_id, commands=['get_file_id'])
 
 # There is no use functions and handlers below:
 
