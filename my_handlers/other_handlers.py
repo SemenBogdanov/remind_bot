@@ -10,6 +10,28 @@ from aiogram import types, Dispatcher
 from create_bot import botDatabase, bot
 
 
+async def formal_checklist(message: types.Message):
+    await message.answer('''
+1. Поток данных заведен в реестр потоков
+2. Кодировка потоков соответствует стандартам
+3. МИРО: 
+3.1. Поток данных нанесен на доску
+3.2. Указаны контакты со стороны поставщика данных
+3.3. Указан формат поставки данных: "Вручную" или "Автоматически"
+3.4. Указан логин SFTP, под которым происходит выкладка данных
+3.5. Указана частота поставки данных, время, приходят ли данные в выходные
+3.6. Указана ссылка на настройку в Ni-Fi
+3.7. Указано название python-скриптов, участвующих в ETL
+4. База данных:
+4.1. Название таблицы созданов в сооветствии с соглашением о наименовании таблиц
+4.2. Таблица и поля описаны через область комментариев 
+4.3. Если есть поле "Регион": имя поля "region_name" varchar(2) с alpha
+4.3. Если есть поле "Дата": имя поля "date" varchar(2) с alpha
+5. Поток занесен в контрольное представление (КВ)
+6. В КВ корректно идентифицируется контентная дата
+7. Поток в Ni-Fi выходит в магистраль (запись ведется в журнал загрузок)''', parse_mode=types.ParseMode.HTML)
+
+
 async def flow_do_checklist(message: types.Message):
     await message.answer('''
 1. Завести задачу в PM-Bitrix24 <a href="https://pm.ac.gov.ru/company/personal/user/">LINK</a>
@@ -41,7 +63,8 @@ async def help(message: types.Message):
                          '\n<b>др след</b> - вывод списка дней рождений, на следующей неделе'
                          '\n<b>/mychatid</b> - показать ID текущего чата'
                          '\n<b>/myuserid</b> - показать ID пользователя'
-                         '\n<b>/flow_do_checklist</b> - чек-лист создания потока данных по стандартам дата-офиса'
+                         '\n<b>/flow_do_checklist</b> - чек-лист создания потока данных по стандартам до'
+                         '\n<b>/formal_checklist</b> - формальный чек-лист создания потока данных по стандартам до'
                          '\n', parse_mode=types.ParseMode.HTML)
 
 
@@ -87,6 +110,7 @@ def register_other_functions(dp: Dispatcher):
     dp.register_message_handler(help, commands=['help'])
     dp.register_message_handler(remind_next_week, text_contains=['др след'])
     dp.register_message_handler(flow_do_checklist, commands=['flow_do_checklist'])
+    dp.register_message_handler(formal_checklist, commands=['formal_flow_checklist'])
     # dp.register_message_handler(get_file_id, commands=['get_file_id'])
 
 # There is no use functions and handlers below:
