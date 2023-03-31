@@ -11,29 +11,31 @@ from create_bot import botDatabase, bot
 
 
 async def formal_checklist(message: types.Message):
-    await message.answer('''
-1. Поток данных заведен в реестр потоков
-2. Кодировка потоков соответствует стандартам
-3. МИРО: 
-3.1. Поток данных нанесен на доску
-3.2. Указаны контакты со стороны поставщика данных
-3.3. Указан формат поставки данных: "Вручную" или "Автоматически"
-3.4. Указан логин SFTP, под которым происходит выкладка данных
-3.5. Указана частота поставки данных, время, приходят ли данные в выходные
-3.6. Указана ссылка на настройку в Ni-Fi
-3.7. Указано название python-скриптов, участвующих в ETL
-4. База данных:
-4.1. Название таблицы созданов в сооветствии с соглашением о наименовании таблиц
-4.2. Таблица и поля описаны через область комментариев 
-4.3. Если есть поле "Регион": имя поля "region_name" varchar(2) с alpha
-4.3. Если есть поле "Дата": имя поля "date" varchar(2) с alpha
-5. Поток занесен в контрольное представление (КВ)
-6. В КВ корректно идентифицируется контентная дата
-7. Поток в Ni-Fi выходит в магистраль (запись ведется в журнал загрузок)''', parse_mode=types.ParseMode.HTML)
+    mc = emoji.emojize(':check_mark_button:', variant="emoji_type")
+    await message.answer(f'''
+    
+{mc}1. Поток данных заведен в реестр потоков
+{mc}2. Кодировка потоков соответствует стандартам
+{mc}3. МИРО: 
+{mc}3.1. Поток данных нанесен на доску
+{mc}3.2. Указаны контакты со стороны поставщика данных
+{mc}3.3. Указан формат поставки данных: "Вручную" или "Автоматически"
+{mc}3.4. Указан логин SFTP, под которым происходит выкладка данных
+{mc}3.5. Указана частота поставки данных, время, приходят ли данные в выходные
+{mc}3.6. Указана ссылка на настройку в Ni-Fi
+{mc}3.7. Указано название python-скриптов, участвующих в ETL
+{mc}4. База данных:
+{mc}4.1. Название таблицы создано в соответствии с соглашением о наименовании таблиц
+{mc}4.2. Таблица и поля описаны через область комментариев 
+{mc}4.3. Если есть поле "Регион": имя поля "region_name" varchar(2) с alpha
+{mc}4.4. Если есть поле "Дата": имя поля "date" varchar(2) с alpha
+{mc}5. Поток занесен в контрольное представление (КВ:tech_data.tech_cfg_control_table)
+{mc}6. В КВ корректно идентифицируется контентная дата
+{mc}7. Поток в Ni-Fi выходит в магистраль (запись ведется в журнал загрузок)''', parse_mode=types.ParseMode.HTML)
 
 
 async def flow_do_checklist(message: types.Message):
-    await message.answer('''
+    await message.answer(f'''
 1. Завести задачу в PM-Bitrix24 <a href="https://pm.ac.gov.ru/company/personal/user/">LINK</a>
 2. Добавить новый поток в таблицу потоков дата-офиса  <a href="https://sn.ac.gov.ru:5001/d/s/np57v5uvm1UbCvKC16JOBa
     nJKiTdpkHg/FFj5J87mBJd6eYxIx6rLpFJZ2fZ_OxbH-9LogldE6XAk">LINK</a>
@@ -47,6 +49,35 @@ async def flow_do_checklist(message: types.Message):
 10. Написать в соответстующие группы в ТГ: перенос из DEV в PROD. Обязательно прикрепить MIRO-link + PM_task_link
 
 ps.: не забыть выключить процессоры в Ni-Fi_DEV''', parse_mode=types.ParseMode.HTML)
+    await message.answer(f'''
+    Как сделать поток?
+
+1. Занести в реестр потоков
+
+2. Сделать скрипт в питоне (автоматизацию)
+
+2.1 Сделать table in pg
+
+3. Сделать в dev nifi поток
+
+4. PyCharm
+Checkout dev
+Update with rebase
+CopyPaste script
+
+5. Test py+nifi+pg
+
+6. Up vers nifi+pg
+
+7. Miro
+
+8. PyCharm checkout main
+Update with rebase
+Copypaste script
+
+Commit and push main
+
+9. Group asking''', parse_mode=types.ParseMode.HTML)
 
 
 async def get_my_chat_id(message: types.Message):
@@ -64,7 +95,7 @@ async def help(message: types.Message):
                          '\n<b>/mychatid</b> - показать ID текущего чата'
                          '\n<b>/myuserid</b> - показать ID пользователя'
                          '\n<b>/flow_do_checklist</b> - чек-лист создания потока данных по стандартам до'
-                         '\n<b>/formal_checklist</b> - формальный чек-лист создания потока данных по стандартам до'
+                         '\n<b>/formal_flow_checklist</b> - формальный чек-лист создания потока данных по стандартам до'
                          '\n', parse_mode=types.ParseMode.HTML)
 
 
