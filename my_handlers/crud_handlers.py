@@ -112,6 +112,7 @@ async def find_by_surname(message: types.Message):
         except:
             # print(res)
             await message.reply('Ошибка при поиске в базе данных!\n')
+            botDatabase.rolllback()
 
         if res:
             for r in res:
@@ -120,6 +121,7 @@ async def find_by_surname(message: types.Message):
         else:
             # print(res)
             await message.reply('Ошибка при выполнении запроса!\n')
+            botDatabase.rolllback()
 
     if check and str(message.chat.id) != '-1001781029794':
         if any(isAdmins):

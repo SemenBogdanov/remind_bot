@@ -30,4 +30,4 @@ if __name__ == '__main__':
 
     except Exception as error:
         print('except \n' + str(error))
-        botDatabase.conn.close()
+        botDatabase.conn.rollback()

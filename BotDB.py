@@ -79,6 +79,9 @@ class BotDB:
     def getinfo(self):
         return self.conn.info
 
+    def rolllback(self):
+        return self.conn.rollback()
+
     def close(self):
         """Закрытие соединения с БД"""
         self.conn.close()
